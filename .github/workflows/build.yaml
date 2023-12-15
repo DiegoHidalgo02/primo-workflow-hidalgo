@@ -1,37 +1,48 @@
 name: Build app
 
 on:
-    workflow_dispatch: #opzione che fa innesacare il workflow manualmente
-        inputs:
-            branch:
-                description: "inserisci il nome della branch"
+  workflow_dispatch: #opzione che fa innesacare il workflow manualmente
+    inputs:
+      branch:
+        description: "inserisci il nome della branch"
 
-jobs: 
+jobs:
   build:
-
     runs-on: windows-latest
 
-    steps: 
+    steps:
       - name: Check out repository code
         uses: actions/checkout@v3
       - run: echo "$(cat hello_world.txt)"
 
-      - name: Setup node.js 
+      - name: Setup node.js
         uses: actions/setup-node@v3
         with:
           node-version: 18.x
-        
+
       - name: install yarn
         run: npm install yarn
 
-      - name: install dependencies 
+      - name: install dependencies
         run: yarn install
-    
+
       - name: build
         run: yarn build
 
-      
-    
-    
-      
-      
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+
+      - name: Setup node #Dato che nella macchina virtuale non c'è node installato, utilizziamo una action creata da altri
+        uses: actions/setup-node@v3 #action creata da altri che installa
+        with:
+          node-version: 18.x
+
+      - name: install dependecies
+        run: npm install
+
+      - name: Test app
+        run: npm run test
