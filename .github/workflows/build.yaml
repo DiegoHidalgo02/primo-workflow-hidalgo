@@ -1,4 +1,4 @@
-name: Build app
+name: Build app and deploy
 
 on:
   workflow_dispatch: #opzione che fa innesacare il workflow manualmente
